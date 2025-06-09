@@ -4,3 +4,6 @@ supabase
 sqlalchemy
 python-dotenv
 psycopg2
+matplotlib
+seaborn
+scikit-learn
