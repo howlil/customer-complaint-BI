@@ -1,2 +1,6 @@
 pandas
 logging 
+supabase
+sqlalchemy
+python-dotenv
+psycopg2
