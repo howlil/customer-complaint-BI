@@ -430,6 +430,105 @@ def get_complaint_details():
 def health_check():
     return jsonify({'status': 'healthy', 'message': 'Flask app is running'})
 
+@app.route('/api/issue-product-heatmap', methods=['GET'])
+def issue_product_heatmap():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT p.product, i.issue, COUNT(*) as count
+        FROM fact_complaints f
+        LEFT JOIN dim_product p ON f.product_key = p.product_key
+        LEFT JOIN dim_issue i ON f.issue_key = i.issue_key
+        WHERE p.product IS NOT NULL AND i.issue IS NOT NULL
+        GROUP BY p.product, i.issue
+    """)
+    data = cur.fetchall()
+    cur.close()
+    conn.close()
+    # Format: [{product, issue, count}]
+    return jsonify([{'product': row[0], 'issue': row[1], 'count': row[2]} for row in data])
+
+@app.route('/api/dispute-by-response', methods=['GET'])
+def dispute_by_response():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT r.company_response_to_consumer, 
+               SUM(CASE WHEN r.consumer_disputed = 'Yes' THEN 1 ELSE 0 END) as disputed,
+               SUM(CASE WHEN r.consumer_disputed = 'No' THEN 1 ELSE 0 END) as not_disputed
+        FROM fact_complaints f
+        LEFT JOIN dim_response r ON f.response_key = r.response_key
+        WHERE r.company_response_to_consumer IS NOT NULL
+        GROUP BY r.company_response_to_consumer
+    """)
+    data = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify([{'response_type': row[0], 'disputed': row[1], 'not_disputed': row[2]} for row in data])
+
+@app.route('/api/timely-by-channel', methods=['GET'])
+def timely_by_channel():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT r.submitted_via, 
+               SUM(CASE WHEN r.timely_response = 'Yes' THEN 1 ELSE 0 END) as timely,
+               COUNT(*) as total
+        FROM fact_complaints f
+        LEFT JOIN dim_response r ON f.response_key = r.response_key
+        WHERE r.submitted_via IS NOT NULL
+        GROUP BY r.submitted_via
+    """)
+    data = cur.fetchall()
+    cur.close()
+    conn.close()
+    # Format: [{channel, timely_rate}]
+    return jsonify([
+        {'channel': row[0], 'timely_rate': round(row[1]/row[2]*100, 2) if row[2] else 0} for row in data
+    ])
+
+@app.route('/api/avg-response-by-product', methods=['GET'])
+def avg_response_by_product():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT p.product, AVG(ds.full_date - dr.full_date) as avg_days
+        FROM fact_complaints f
+        LEFT JOIN dim_product p ON f.product_key = p.product_key
+        LEFT JOIN dim_date ds ON f.date_sent_key = ds.date_key
+        LEFT JOIN dim_date dr ON f.date_received_key = dr.date_key
+        WHERE p.product IS NOT NULL AND ds.full_date IS NOT NULL AND dr.full_date IS NOT NULL
+        GROUP BY p.product
+        ORDER BY avg_days
+        LIMIT 10
+    """)
+    data = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify([{'product': row[0], 'avg_days': round(row[1], 2) if row[1] else 0} for row in data])
+
+@app.route('/api/response-stats', methods=['GET'])
+def response_stats():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT r.timely_response, COUNT(*) FROM fact_complaints f
+        LEFT JOIN dim_response r ON f.response_key = r.response_key
+        WHERE r.timely_response IS NOT NULL
+        GROUP BY r.timely_response
+    """)
+    timely = {row[0]: row[1] for row in cur.fetchall()}
+    cur.execute("""
+        SELECT r.consumer_disputed, COUNT(*) FROM fact_complaints f
+        LEFT JOIN dim_response r ON f.response_key = r.response_key
+        WHERE r.consumer_disputed IS NOT NULL
+        GROUP BY r.consumer_disputed
+    """)
+    dispute = {row[0]: row[1] for row in cur.fetchall()}
+    cur.close()
+    conn.close()
+    return jsonify({'timely_response': timely, 'dispute': dispute})
+
 if __name__ == '__main__':
     # Load environment variables
     from dotenv import load_dotenv

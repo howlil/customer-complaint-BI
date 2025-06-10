@@ -4,95 +4,18 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://127.0.0.1:5001/api';
 
-const DRAWER_WIDTH = '240px';
-
-const menuItems = [
-  { 
-    text: 'Overview', 
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-      </svg>
-    ), 
-    value: 'overview' 
-  },
-  { 
-    text: 'Trends', 
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-      </svg>
-    ), 
-    value: 'trends' 
-  },
-  { 
-    text: 'Companies', 
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ), 
-    value: 'companies' 
-  },
-  { 
-    text: 'Issues', 
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
-    ), 
-    value: 'issues' 
-  },
-  { 
-    text: 'Locations', 
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    ), 
-    value: 'locations' 
-  },
-  { 
-    text: 'About', 
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ), 
-    value: 'about' 
-  }
-];
-
 const teamMembers = [
-  {
-    name: "Nouval Habibie",
-    nim: "2211521020",
-    image: "https://via.placeholder.com/150"
-  },
-  {
-    name: "Mhd Ulil Abshar",
-    nim: "12345678",
-    image: "https://via.placeholder.com/150"
-  },
-  {
-    name: "Mustafa Fathur Rahman",
-    nim: "12345678",
-    image: "https://via.placeholder.com/150"
-  },
-  // Tambahkan anggota tim lainnya
+  { name: 'Mhd Ulil Abshar', nim: '2211521003' },
+  { name: 'Nouval Habibie', nim: '2211521020' },
+  { name: 'Mustafa Fathur Rahman', nim: '2211522036' },
 ];
 
 const StatCard = ({ title, value, icon, color }) => (
-  <div className="bg-white rounded-lg shadow-md p-6 transition-all hover:-translate-y-1 hover:shadow-lg">
-    <div className="flex items-center">
-      <div className={`p-3 rounded-lg flex items-center justify-center mr-4 ${color}`}>
-        {icon}
-      </div>
-      <div>
-        <p className="text-gray-600 font-medium">{title}</p>
-        <p className="text-2xl font-bold mt-1">{value}</p>
-      </div>
+  <div className={`bg-white rounded-lg shadow-md p-3 flex flex-col items-center justify-center ${color}`} style={{ minWidth: 0 }}>
+    <div className="p-1 rounded flex items-center justify-center text-lg mb-1">{icon}</div>
+    <div className="text-center">
+      <p className="text-gray-500 font-medium text-xs">{title}</p>
+      <p className="text-xl font-bold mt-0.5">{value}</p>
     </div>
   </div>
 );
@@ -103,41 +26,57 @@ const Dashboard = () => {
   const [topCompanies, setTopCompanies] = useState([]);
   const [issuesDistribution, setIssuesDistribution] = useState([]);
   const [stateDistribution, setStateDistribution] = useState([]);
-  const [responseChannels, setResponseChannels] = useState([]);
+  const [issueProductHeatmap, setIssueProductHeatmap] = useState([]);
+  const [disputeByResponse, setDisputeByResponse] = useState([]);
+  const [timelyByChannel, setTimelyByChannel] = useState([]);
+  const [avgResponseByProduct, setAvgResponseByProduct] = useState([]);
+  const [responseStats, setResponseStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
   const [selectedState, setSelectedState] = useState('');
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState('');
 
-  const fetchData = async () => {
+  const fetchData = async (state = '', date = '') => {
     setLoading(true);
     setError(null);
     try {
+      const params = {};
+      if (state) params.state = state;
+      if (date) params.date = date;
       const [
         overviewRes,
         trendRes,
         companiesRes,
         issuesRes,
         statesRes,
-        channelsRes
+        heatmapRes,
+        disputeRes,
+        timelyRes,
+        avgRes,
+        statsRes
       ] = await Promise.all([
-        axios.get(`${API_BASE_URL}/overview`),
-        axios.get(`${API_BASE_URL}/complaints-trend`),
-        axios.get(`${API_BASE_URL}/top-companies`),
-        axios.get(`${API_BASE_URL}/issues-distribution`),
-        axios.get(`${API_BASE_URL}/state-distribution`),
-        axios.get(`${API_BASE_URL}/response-channels`)
+        axios.get(`${API_BASE_URL}/overview`, { params }),
+        axios.get(`${API_BASE_URL}/complaints-trend`, { params }),
+        axios.get(`${API_BASE_URL}/top-companies`, { params }),
+        axios.get(`${API_BASE_URL}/issues-distribution`, { params }),
+        axios.get(`${API_BASE_URL}/state-distribution`, { params }),
+        axios.get(`${API_BASE_URL}/issue-product-heatmap`, { params }),
+        axios.get(`${API_BASE_URL}/dispute-by-response`, { params }),
+        axios.get(`${API_BASE_URL}/timely-by-channel`, { params }),
+        axios.get(`${API_BASE_URL}/avg-response-by-product`, { params }),
+        axios.get(`${API_BASE_URL}/response-stats`, { params })
       ]);
-
       setOverview(overviewRes.data);
       setComplaintsTrend(trendRes.data);
       setTopCompanies(companiesRes.data);
       setIssuesDistribution(issuesRes.data);
       setStateDistribution(statesRes.data);
-      setResponseChannels(channelsRes.data);
+      setIssueProductHeatmap(heatmapRes.data);
+      setDisputeByResponse(disputeRes.data);
+      setTimelyByChannel(timelyRes.data);
+      setAvgResponseByProduct(avgRes.data);
+      setResponseStats(statsRes.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
       setError(error.response?.data?.message || error.message || 'An error occurred while fetching data');
     } finally {
       setLoading(false);
@@ -145,324 +84,377 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(selectedState, selectedDate);
+    // eslint-disable-next-line
+  }, [selectedState, selectedDate]);
+
+  const uniqueStates = [...new Set(stateDistribution.map(d => d.state))];
+  const products = [...new Set(issueProductHeatmap.map(d => d.product))];
+  const issues = [...new Set(issueProductHeatmap.map(d => d.issue))];
+  const z = products.map(p => issues.map(i => {
+    const found = issueProductHeatmap.find(d => d.product === p && d.issue === i);
+    return found ? found.count : 0;
+  }));
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-400 border-t-transparent"></div>
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="p-4">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
           <strong className="font-bold">Error!</strong>
           <span className="block sm:inline ml-2">{error}</span>
-          <button
-            onClick={fetchData}
-            className="absolute top-0 right-0 px-4 py-3 text-red-700 hover:text-red-900"
-          >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
+          <button onClick={() => fetchData(selectedState, selectedDate)} className="absolute top-0 right-0 px-4 py-3 text-red-700 hover:text-red-900">
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
           </button>
         </div>
       </div>
     );
   }
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'overview':
-        return (
-          <div className="space-y-6">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <StatCard
-                title="Total Complaints"
-                value={overview.total_complaints.toLocaleString()}
-                icon={
-                  <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                }
-                color="bg-blue-100"
-              />
-              <StatCard
-                title="Avg. Resolution Time"
-                value={`${overview.avg_resolution_time} days`}
-                icon={
-                  <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                }
-                color="bg-green-100"
-              />
-              <StatCard
-                title="Timely Response Rate"
-                value={`${overview.timely_response_rate}%`}
-                icon={
-                  <svg className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                }
-                color="bg-yellow-100"
-              />
-              <StatCard
-                title="Dispute Rate"
-                value={`${overview.dispute_rate}%`}
-                icon={
-                  <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                }
-                color="bg-red-100"
-              />
-            </div>
-
-            {/* Charts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-md p-6">
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Header */}
+      <header className="sticky top-0 bg-white shadow z-10">
+        <div className="max-w-screen-2xl mx-auto flex items-center justify-between px-6 py-3">
+          <h1 className="text-xl font-bold text-blue-800">Customer Complaints Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <select value={selectedState} onChange={e => setSelectedState(e.target.value)} className="h-9 px-3 rounded border text-sm">
+              <option value="">All States</option>
+              {uniqueStates.map(state => (
+                <option key={state} value={state}>{state}</option>
+              ))}
+            </select>
+            <input type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} className="h-9 px-3 rounded border text-sm" />
+          </div>
+        </div>
+      </header>
+      <main className="max-w-screen-2xl mx-auto px-6 py-6 w-full">
+        {/* Stat Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <StatCard title="Total Complaints" value={overview.total_complaints?.toLocaleString() || '-'} icon={<svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>} color="bg-blue-50" />
+          <StatCard title="Avg. Resolution Time" value={overview.avg_resolution_time ? `${overview.avg_resolution_time} days` : '-'} icon={<svg className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} color="bg-green-50" />
+          <StatCard title="Timely Response Rate" value={overview.timely_response_rate ? `${overview.timely_response_rate}%` : '-'} icon={<svg className="h-5 w-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} color="bg-yellow-50" />
+          <StatCard title="Dispute Rate" value={overview.dispute_rate ? `${overview.dispute_rate}%` : '-'} icon={<svg className="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>} color="bg-red-50" />
+        </div>
+        {/* Chart Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Complaints Trend */}
+          <div className="bg-white rounded-xl shadow-md p-5 flex flex-col">
+            <span className="text-base font-semibold mb-2">Complaints Trend</span>
+            <div className="flex-1 min-h-[220px]">
+              {complaintsTrend.length === 0 ? (
+                <div className="text-center text-gray-400 py-10">No data for this filter</div>
+              ) : (
                 <Plot
-                  data={[
-                    {
-                      x: complaintsTrend.map(d => `${d.year}-${d.month}`),
-                      y: complaintsTrend.map(d => d.complaint_count),
-                      type: 'scatter',
-                      mode: 'lines+markers',
-                      name: 'Complaints',
-                      line: { width: 3, color: '#3b82f6' }
-                    }
-                  ]}
+                  data={[{
+                    x: complaintsTrend.map(d => `${d.year}-${d.month}`),
+                    y: complaintsTrend.map(d => d.complaint_count),
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'Complaints',
+                    line: { width: 2, color: '#3b82f6' }
+                  }]}
                   layout={{
-                    title: 'Complaints Trend',
-                    paper_bgcolor: 'rgba(0,0,0,0)',
-                    plot_bgcolor: 'rgba(0,0,0,0)',
-                    xaxis: { title: 'Date', gridcolor: '#e5e7eb' },
+                    margin: { t: 20, r: 10, l: 40, b: 40 },
+                    font: { size: 12 },
+                    title: '',
+                    xaxis: { title: 'Date', gridcolor: '#e5e7eb', tickangle: -45 },
                     yaxis: { title: 'Number of Complaints', gridcolor: '#e5e7eb' },
-                    margin: { t: 30, r: 30, l: 60, b: 40 }
                   }}
                   useResizeHandler
-                  style={{ width: '100%', height: '400px' }}
+                  style={{ width: '100%', height: '220px' }}
                 />
-              </div>
-
-              <div className="bg-white rounded-lg shadow-md p-6">
+              )}
+            </div>
+            <span className="text-xs text-gray-400 mt-1">Grafik ini menunjukkan tren jumlah keluhan yang diterima setiap bulan.</span>
+          </div>
+          {/* Top Companies */}
+          <div className="bg-white rounded-xl shadow-md p-5 flex flex-col">
+            <span className="text-base font-semibold mb-2">Top 10 Companies by Complaints</span>
+            <div className="flex-1 min-h-[220px]">
+              {topCompanies.length === 0 ? (
+                <div className="text-center text-gray-400 py-10">No data for this filter</div>
+              ) : (
                 <Plot
-                  data={[
-                    {
-                      y: topCompanies.map(d => d.company),
-                      x: topCompanies.map(d => d.complaint_count),
-                      type: 'bar',
-                      orientation: 'h',
-                      marker: { color: '#3b82f6' }
-                    }
-                  ]}
+                  data={[{
+                    y: topCompanies.map(d => d.company),
+                    x: topCompanies.map(d => d.complaint_count),
+                    type: 'bar',
+                    orientation: 'h',
+                    marker: { color: '#3b82f6' }
+                  }]}
                   layout={{
-                    title: 'Top 10 Companies by Complaints',
-                    paper_bgcolor: 'rgba(0,0,0,0)',
-                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    margin: { t: 20, r: 10, l: 120, b: 40 },
+                    font: { size: 12 },
+                    title: '',
                     xaxis: { title: 'Number of Complaints', gridcolor: '#e5e7eb' },
                     yaxis: { automargin: true },
-                    margin: { t: 30, r: 30, l: 200, b: 40 }
                   }}
                   useResizeHandler
-                  style={{ width: '100%', height: '400px' }}
+                  style={{ width: '100%', height: '220px' }}
                 />
-              </div>
-
-              <div className="bg-white rounded-lg shadow-md p-6">
+              )}
+            </div>
+            <span className="text-xs text-gray-400 mt-1">Bar chart ini menampilkan perusahaan dengan jumlah keluhan terbanyak.</span>
+          </div>
+          {/* Issues Distribution */}
+          <div className="bg-white rounded-xl shadow-md p-5 flex flex-col overflow-x-auto">
+            <span className="text-base font-semibold mb-2">Issues Distribution</span>
+            <div className="flex-1 min-h-[220px]">
+              {issuesDistribution.length === 0 ? (
+                <div className="text-center text-gray-400 py-10">No data for this filter</div>
+              ) : (
                 <Plot
-                  data={[
-                    {
-                      labels: issuesDistribution.map(d => d.issue),
-                      values: issuesDistribution.map(d => d.count),
-                      type: 'pie',
-                      hole: 0.4,
-                      marker: {
-                        colors: [
-                          '#3b82f6',
-                          '#60a5fa',
-                          '#93c5fd',
-                          '#bfdbfe',
-                          '#dbeafe'
-                        ]
-                      }
+                  data={[{
+                    labels: issuesDistribution.map(d => d.issue),
+                    values: issuesDistribution.map(d => d.count),
+                    type: 'pie',
+                    hole: 0.4,
+                    marker: {
+                      colors: [
+                        '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'
+                      ]
                     }
-                  ]}
+                  }]}
                   layout={{
-                    title: 'Issues Distribution',
-                    paper_bgcolor: 'rgba(0,0,0,0)',
-                    plot_bgcolor: 'rgba(0,0,0,0)',
-                    margin: { t: 30, r: 30, l: 30, b: 30 },
+                    margin: { t: 20, r: 10, l: 10, b: 40 },
+                    font: { size: 12 },
+                    title: '',
                     showlegend: true
                   }}
                   useResizeHandler
-                  style={{ width: '100%', height: '400px' }}
+                  style={{ width: '100%', height: '220px', minWidth: 300 }}
                 />
-              </div>
-
-              <div className="bg-white rounded-lg shadow-md p-6">
+              )}
+            </div>
+            <span className="text-xs text-gray-400 mt-1">Pie chart ini memperlihatkan distribusi isu utama yang dikeluhkan konsumen.</span>
+          </div>
+          {/* Complaints by State */}
+          <div className="bg-white rounded-xl shadow-md p-5 flex flex-col">
+            <span className="text-base font-semibold mb-2">Complaints by State</span>
+            <div className="flex-1 min-h-[220px]">
+              {stateDistribution.length === 0 ? (
+                <div className="text-center text-gray-400 py-10">No data for this filter</div>
+              ) : (
                 <Plot
-                  data={[
-                    {
-                      type: 'choropleth',
-                      locationmode: 'USA-states',
-                      locations: stateDistribution.map(d => d.state),
-                      z: stateDistribution.map(d => d.complaint_count),
-                      text: stateDistribution.map(d => `${d.state}: ${d.complaint_count.toLocaleString()} complaints`),
-                      colorscale: [
-                        [0, '#dbeafe'],
-                        [0.5, '#60a5fa'],
-                        [1, '#1d4ed8']
-                      ]
-                    }
-                  ]}
+                  data={[{
+                    type: 'choropleth',
+                    locationmode: 'USA-states',
+                    locations: stateDistribution.map(d => d.state),
+                    z: stateDistribution.map(d => d.complaint_count),
+                    text: stateDistribution.map(d => `${d.state}: ${d.complaint_count.toLocaleString()} complaints`),
+                    colorscale: [
+                      [0, '#dbeafe'], [0.5, '#60a5fa'], [1, '#1d4ed8']
+                    ]
+                  }]}
                   layout={{
-                    title: 'Complaints by State',
-                    paper_bgcolor: 'rgba(0,0,0,0)',
-                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    margin: { t: 20, r: 0, l: 0, b: 0 },
+                    font: { size: 12 },
+                    title: '',
                     geo: {
                       scope: 'usa',
                       showlakes: true,
                       lakecolor: 'white'
-                    },
-                    margin: { t: 30, r: 0, l: 0, b: 0 }
+                    }
                   }}
                   useResizeHandler
-                  style={{ width: '100%', height: '400px' }}
+                  style={{ width: '100%', height: '220px' }}
                 />
-              </div>
+              )}
             </div>
+            <span className="text-xs text-gray-400 mt-1">Peta ini menunjukkan distribusi keluhan berdasarkan negara bagian di Amerika Serikat.</span>
           </div>
-        );
-      
-      case 'about':
-        return (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {teamMembers.map((member, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg">
-                <img 
-                  src={member.image} 
-                  alt={member.name}
-                  className="w-full h-48 object-cover"
+          {/* Heatmap Issue-Product */}
+          <div className="bg-white rounded-xl shadow-md p-5 flex flex-col overflow-x-auto">
+            <span className="text-base font-semibold mb-2">Issue Distribution by Product</span>
+            <div className="flex-1 min-h-[220px]">
+              {products.length === 0 || issues.length === 0 ? (
+                <div className="text-center text-gray-400 py-10">No data for this filter</div>
+              ) : (
+                <Plot
+                  data={[{
+                    x: issues,
+                    y: products,
+                    z: z,
+                    type: 'heatmap',
+                    colorscale: 'Blues',
+                    hoverongaps: false
+                  }]}
+                  layout={{
+                    margin: { t: 20, r: 10, l: 60, b: 40 },
+                    font: { size: 12 },
+                    title: '',
+                    xaxis: { title: 'Issue', automargin: true },
+                    yaxis: { title: 'Product', automargin: true },
+                  }}
+                  useResizeHandler
+                  style={{ width: Math.max(300, issues.length * 18), height: Math.max(220, products.length * 18) }}
                 />
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800">{member.name}</h3>
-                  <p className="text-gray-600">NIM: {member.nim}</p>
-                  <p className="text-gray-600 mt-2">{member.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        );
-      
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 w-[240px] bg-white shadow-lg z-30">
-        <div className="flex flex-col h-full">
-          {/* Logo/Header */}
-          <div className="flex items-center justify-center h-16 border-b">
-            <h1 className="text-xl font-bold text-gray-800">Customer Complaints</h1>
-          </div>
-
-          {/* Menu Items */}
-          <nav className="flex-1 overflow-y-auto">
-            <ul className="p-2 space-y-1">
-              {menuItems.map((item) => (
-                <li key={item.value}>
-                  <button
-                    onClick={() => setActiveTab(item.value)}
-                    className={`w-full flex items-center px-4 py-3 rounded-lg transition-colors ${
-                      activeTab === item.value
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    <span className={`${activeTab === item.value ? 'text-blue-600' : 'text-gray-500'}`}>
-                      {item.icon}
-                    </span>
-                    <span className={`ml-3 font-medium ${
-                      activeTab === item.value ? 'text-blue-600' : 'text-gray-700'
-                    }`}>
-                      {item.text}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Filters */}
-          <div className="p-4 border-t space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                State
-              </label>
-              <select
-                value={selectedState}
-                onChange={(e) => setSelectedState(e.target.value)}
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="">All States</option>
-                {stateDistribution.map((state) => (
-                  <option key={state.state} value={state.state}>
-                    {state.state}
-                  </option>
-                ))}
-              </select>
+              )}
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Date
-              </label>
-              <input
-                type="date"
-                value={selectedDate || ''}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              />
+            <span className="text-xs text-gray-400 mt-1">Heatmap ini menunjukkan distribusi jumlah keluhan untuk setiap kombinasi produk dan isu utama.</span>
+          </div>
+          {/* Dispute by Response */}
+          <div className="bg-white rounded-xl shadow-md p-5 flex flex-col">
+            <span className="text-base font-semibold mb-2">Dispute Rate by Company Response Type</span>
+            <div className="flex-1 min-h-[220px]">
+              {disputeByResponse.length === 0 ? (
+                <div className="text-center text-gray-400 py-10">No data for this filter</div>
+              ) : (
+                <Plot
+                  data={[{
+                    x: disputeByResponse.map(d => d.response_type),
+                    y: disputeByResponse.map(d => d.disputed),
+                    name: 'Disputed',
+                    type: 'bar',
+                    marker: { color: '#ef4444' }
+                  }, {
+                    x: disputeByResponse.map(d => d.response_type),
+                    y: disputeByResponse.map(d => d.not_disputed),
+                    name: 'Not Disputed',
+                    type: 'bar',
+                    marker: { color: '#10b981' }
+                  }]}
+                  layout={{
+                    barmode: 'stack',
+                    margin: { t: 20, r: 10, l: 40, b: 40 },
+                    font: { size: 12 },
+                    title: '',
+                    xaxis: { title: 'Company Response', automargin: true },
+                    yaxis: { title: 'Number of Complaints', automargin: true },
+                  }}
+                  useResizeHandler
+                  style={{ width: '100%', height: '220px' }}
+                />
+              )}
             </div>
+            <span className="text-xs text-gray-400 mt-1">Grafik ini memperlihatkan jumlah keluhan yang disengketakan dan tidak, berdasarkan tipe respons perusahaan.</span>
+          </div>
+          {/* Timely by Channel */}
+          <div className="bg-white rounded-xl shadow-md p-5 flex flex-col">
+            <span className="text-base font-semibold mb-2">Timely Response Rate by Channel</span>
+            <div className="flex-1 min-h-[220px]">
+              {timelyByChannel.length === 0 ? (
+                <div className="text-center text-gray-400 py-10">No data for this filter</div>
+              ) : (
+                <Plot
+                  data={[{
+                    x: timelyByChannel.map(d => d.channel),
+                    y: timelyByChannel.map(d => d.timely_rate),
+                    type: 'bar',
+                    marker: { color: '#3b82f6' }
+                  }]}
+                  layout={{
+                    margin: { t: 20, r: 10, l: 40, b: 40 },
+                    font: { size: 12 },
+                    title: '',
+                    xaxis: { title: 'Submission Channel', automargin: true },
+                    yaxis: { title: 'Timely Response Rate (%)', automargin: true },
+                  }}
+                  useResizeHandler
+                  style={{ width: '100%', height: '220px' }}
+                />
+              )}
+            </div>
+            <span className="text-xs text-gray-400 mt-1">Bar chart ini menunjukkan persentase respons tepat waktu berdasarkan saluran pengajuan keluhan.</span>
+          </div>
+          {/* Avg Response by Product */}
+          <div className="bg-white rounded-xl shadow-md p-5 flex flex-col overflow-x-auto">
+            <span className="text-base font-semibold mb-2">Average Response Time by Product</span>
+            <div className="flex-1 min-h-[220px]">
+              {avgResponseByProduct.length === 0 ? (
+                <div className="text-center text-gray-400 py-10">No data for this filter</div>
+              ) : (
+                <Plot
+                  data={[{
+                    y: avgResponseByProduct.map(d => d.product),
+                    x: avgResponseByProduct.map(d => d.avg_days),
+                    type: 'bar',
+                    orientation: 'h',
+                    marker: { color: '#f59e42' }
+                  }]}
+                  layout={{
+                    margin: { t: 20, r: 10, l: 80, b: 20 },
+                    font: { size: 12 },
+                    title: '',
+                    xaxis: { title: 'Average Days to Response', automargin: true },
+                    yaxis: { automargin: true },
+                  }}
+                  useResizeHandler
+                  style={{ width: Math.max(300, avgResponseByProduct.length * 18), height: Math.max(220, avgResponseByProduct.length * 18) }}
+                />
+              )}
+            </div>
+            <span className="text-xs text-gray-400 mt-1">Grafik ini menampilkan rata-rata waktu respons perusahaan untuk setiap produk.</span>
+          </div>
+          {/* Pie Response Stats */}
+          <div className="bg-white rounded-xl shadow-md p-5 flex flex-col">
+            <span className="text-base font-semibold mb-2">Response & Dispute Distribution</span>
+            <div className="flex flex-col md:flex-row justify-center items-center gap-4 min-h-[220px]">
+              {(!responseStats.timely_response || !responseStats.dispute) ? (
+                <div className="text-center text-gray-400 py-10 w-full">No data for this filter</div>
+              ) : (
+                <>
+                  <div className="flex-1">
+                    <Plot
+                      data={[{
+                        labels: Object.keys(responseStats.timely_response || {}),
+                        values: Object.values(responseStats.timely_response || {}),
+                        type: 'pie',
+                        hole: 0.4,
+                        marker: { colors: ['#10b981', '#ef4444'] }
+                      }]}
+                      layout={{
+                        margin: { t: 20, r: 10, l: 10, b: 10 },
+                        font: { size: 12 },
+                        title: 'Timely Response',
+                        showlegend: true
+                      }}
+                      useResizeHandler
+                      style={{ width: '100%', height: '180px', minWidth: 180 }}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Plot
+                      data={[{
+                        labels: Object.keys(responseStats.dispute || {}),
+                        values: Object.values(responseStats.dispute || {}),
+                        type: 'pie',
+                        hole: 0.4,
+                        marker: { colors: ['#3b82f6', '#f59e42'] }
+                      }]}
+                      layout={{
+                        margin: { t: 20, r: 10, l: 10, b: 10 },
+                        font: { size: 12 },
+                        title: 'Dispute',
+                        showlegend: true
+                      }}
+                      useResizeHandler
+                      style={{ width: '100%', height: '180px', minWidth: 180 }}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+            <span className="text-xs text-gray-400 mt-1">Pie chart ini memperlihatkan distribusi respons tepat waktu dan sengketa konsumen.</span>
           </div>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 ml-[240px]">
-        {/* Header */}
-        <header className="bg-white shadow-sm">
-          <div className="flex items-center justify-between px-6 h-16">
-            <h2 className="text-2xl font-bold text-gray-800">
-              {menuItems.find(item => item.value === activeTab)?.text || 'Dashboard'}
-            </h2>
-            <button
-              onClick={fetchData}
-              className="p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
-              title="Refresh data"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            </button>
-          </div>
-        </header>
-
-        {/* Main Content Area */}
-        <main className="p-6">
-          {renderContent()}
-        </main>
-      </div>
+      </main>
+      <footer className="bg-white border-t py-3 mt-6">
+        <div className="max-w-screen-xl mx-auto text-center text-xs text-gray-500">
+          {teamMembers.map((member, idx) => (
+            <span key={idx}>
+              {member.name} ({member.nim}){idx < teamMembers.length - 1 && ' · '}
+            </span>
+          ))}
+        </div>
+      </footer>
     </div>
   );
 };
