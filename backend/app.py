@@ -544,4 +544,4 @@ if __name__ == '__main__':
         logger.info(f"Using database name: {os.getenv('DB_NAME', 'not set')}")
     
     logger.info("Starting Flask application...")
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
