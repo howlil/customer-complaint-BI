@@ -1,4 +1,4 @@
-name: Deploy Flask to Cloud Run
+name: Deploy Flask Backend to Cloud Run
 
 on:
   push:
@@ -29,18 +29,17 @@ jobs:
       - name: Authenticate Docker with Artifact Registry
         run: gcloud auth configure-docker asia-southeast2-docker.pkg.dev
 
-      - name: Build and Push Docker Image
+      - name: Build and Push Docker Image (Backend Only)
         run: |
-          # Replace this with your Artifact Registry URL
-          IMAGE_NAME="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bi-images/flask-service"
-          docker build -t $IMAGE_NAME .
+          IMAGE_NAME="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bi-images/flask-backend"
+          docker build -t $IMAGE_NAME -f backend/Dockerfile ./backend
           docker push $IMAGE_NAME
 
-      - name: Deploy to Cloud Run
+      - name: Deploy to Cloud Run (Backend)
         env:
-          IMAGE_NAME: "asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bi-images/flask-service"
+          IMAGE_NAME: "asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/bi-images/flask-backend"
         run: |
-          gcloud run deploy flask-service \
+          gcloud run deploy flask-backend \
             --image=$IMAGE_NAME \
             --region=${{ secrets.GCP_REGION }} \
             --platform=managed \
