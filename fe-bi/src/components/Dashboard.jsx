@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://127.0.0.1:5001/api';
+const API_BASE_URL = 'https://flask-backend-418864732285.asia-southeast2.run.app /api';
 
 const teamMembers = [
   { name: 'Mhd Ulil Abshar', nim: '2211521003' },
