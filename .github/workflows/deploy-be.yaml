@@ -49,4 +49,5 @@ jobs:
             --cpu 1 \
             --min-instances 0 \
             --max-instances 10 \
-            --timeout 300   
+            --timeout 300 \
+            --set-env-vars=DATABASE_URL=${{ secrets.DATABASE_URL }}

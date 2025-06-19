@@ -16,15 +16,11 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Konfigurasi CORS yang lebih sederhana
-CORS(app, 
-     resources={
-         r"/api/*": {
-             "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
-             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-             "allow_headers": ["Content-Type"],
-             "supports_credentials": True
-         }
-     })
+CORS(app, resources={r"/api/*": {"origins": [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://react-frontend-418864732285.asia-southeast2.run.app"
+]}}, supports_credentials=True)
 
 def get_db_connection():
     database_url = os.getenv('DATABASE_URL')
